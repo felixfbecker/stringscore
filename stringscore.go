@@ -28,22 +28,20 @@ func Score(target string, query string) int {
 	targetLower := strings.ToLower(target)
 	queryLower := strings.ToLower(query)
 
-	startAt := 0
 	score := 0
 
 	for queryIdx := 0; queryIdx < len(query); queryIdx++ {
-		targetIdx := strings.IndexByte(targetLower[startAt:], queryLower[queryIdx])
+		targetIdx := strings.IndexByte(targetLower, queryLower[queryIdx])
 		if targetIdx == -1 {
 			score = 0 // This makes sure that the query is contained in the target
 			break
 		}
-		targetIdx += startAt
 
 		// Character match bonus
 		score++
 
 		// Consecutive match bonus
-		if startAt == targetIdx {
+		if targetIdx == 0 {
 			score += 5
 		}
 
@@ -63,7 +61,9 @@ func Score(target string, query string) int {
 			score++
 		}
 
-		startAt = targetIdx + 1
+		// Remove one character from the start of target strings.
+		targetLower = targetLower[1:]
+		target = target[1:]
 	}
 
 	return score
