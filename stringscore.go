@@ -25,13 +25,15 @@ func Score(target string, query string) int {
 		return 0 // impossible for query to be a substring
 	}
 
-	targetLower := strings.ToLower(target)
-	queryLower := strings.ToLower(query)
+	targetRunes := []rune(target)
+	queryRunes := []rune(query)
+	targetLower := []rune(strings.ToLower(target))
+	queryLower := []rune(strings.ToLower(query))
 
 	score := 0
 
-	for queryIdx := 0; queryIdx < len(query); queryIdx++ {
-		targetIdx := strings.IndexByte(targetLower, queryLower[queryIdx])
+	for queryIdx := 0; queryIdx < len(queryRunes); queryIdx++ {
+		targetIdx := runeIndex(targetLower, queryLower[queryIdx])
 		if targetIdx == -1 {
 			score = 0 // This makes sure that the query is contained in the target
 			break
@@ -46,31 +48,39 @@ func Score(target string, query string) int {
 		}
 
 		// Same case bonus
-		if target[targetIdx] == query[queryIdx] {
+		if targetRunes[targetIdx] == queryRunes[queryIdx] {
 			score++
 		}
 
 		// Start of word bonus
 		if targetIdx == 0 {
 			score += 8
-		} else if isWordSeparator(target[targetIdx-1]) {
+		} else if isWordSeparator(targetRunes[targetIdx-1]) {
 			// After separator bonus
 			score += 7
-		} else if unicode.IsUpper(rune(target[targetIdx])) {
+		} else if unicode.IsUpper(targetRunes[targetIdx]) {
 			// Inside word upper case bonus
 			score++
 		}
 
-		// Remove one character from the start of target strings.
+		// Remove one rune from the start of target strings.
 		targetLower = targetLower[1:]
-		target = target[1:]
+		targetRunes = targetRunes[1:]
 	}
-
 	return score
 }
 
 const wordPathBoundary = "-_ /\\."
 
-func isWordSeparator(c byte) bool {
-	return strings.IndexByte(wordPathBoundary, c) >= 0
+func isWordSeparator(r rune) bool {
+	return strings.IndexRune(wordPathBoundary, r) >= 0
+}
+
+func runeIndex(s []rune, r rune) int {
+	for i, s := range s {
+		if s == r {
+			return i
+		}
+	}
+	return -1
 }

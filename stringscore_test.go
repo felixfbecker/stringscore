@@ -8,11 +8,11 @@ import (
 )
 
 func TestScore(t *testing.T) {
-	target := "HeLlo-World"
+	target := "H❄Ll❄-World"
 
 	scores := []int{
-		stringscore.Score(target, "HelLo-World"), // direct case match
-		stringscore.Score(target, "hello-world"), // direct mix-case match
+		stringscore.Score(target, "H❄lL❄-World"), // direct case match
+		stringscore.Score(target, "h❄ll❄-world"), // direct mix-case match
 		stringscore.Score(target, "HW"),          // direct case prefix (multiple)
 		stringscore.Score(target, "hw"),          // direct mix-case prefix (multiple)
 		stringscore.Score(target, "H"),           // direct case prefix
