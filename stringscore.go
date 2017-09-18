@@ -4,6 +4,7 @@ package stringscore
 
 import (
 	"strings"
+	"unicode"
 )
 
 // Score computes a score for the given string and the given query.
@@ -16,7 +17,6 @@ import (
 // Start of word/path bonus: 7
 // Start of string bonus: 8
 func Score(target string, query string) int {
-
 	if target == "" || query == "" {
 		return 0 // return early if target or query are undefined
 	}
@@ -25,16 +25,16 @@ func Score(target string, query string) int {
 		return 0 // impossible for query to be a substring
 	}
 
-	targetLower := strings.ToLower(target)
-	queryLower := strings.ToLower(query)
+	targetRunes := []rune(target)
+	queryRunes := []rune(query)
+	targetLower := []rune(strings.ToLower(target))
+	queryLower := []rune(strings.ToLower(query))
 
-	startAt := 0
 	score := 0
 
-	for queryIdx := 0; queryIdx < len(query); queryIdx++ {
-		targetIdx := strings.IndexByte(targetLower[startAt:], queryLower[queryIdx]) + startAt
-
-		if targetIdx < startAt {
+	for queryIdx := 0; queryIdx < len(queryRunes); queryIdx++ {
+		targetIdx := runeIndex(targetLower, queryLower[queryIdx])
+		if targetIdx == -1 {
 			score = 0 // This makes sure that the query is contained in the target
 			break
 		}
@@ -43,38 +43,44 @@ func Score(target string, query string) int {
 		score++
 
 		// Consecutive match bonus
-		if startAt == targetIdx {
+		if targetIdx == 0 {
 			score += 5
 		}
 
 		// Same case bonus
-		if target[targetIdx] == query[queryIdx] {
+		if targetRunes[targetIdx] == queryRunes[queryIdx] {
 			score++
 		}
 
 		// Start of word bonus
 		if targetIdx == 0 {
 			score += 8
-		} else if isWordSeparator(target[targetIdx-1]) {
+		} else if isWordSeparator(targetRunes[targetIdx-1]) {
 			// After separator bonus
 			score += 7
-		} else if isUpperASCII(target[targetIdx]) {
+		} else if unicode.IsUpper(targetRunes[targetIdx]) {
 			// Inside word upper case bonus
 			score++
 		}
 
-		startAt = targetIdx + 1
+		// Remove one rune from the start of target strings.
+		targetLower = targetLower[1:]
+		targetRunes = targetRunes[1:]
 	}
-
 	return score
 }
 
 const wordPathBoundary = "-_ /\\."
 
-func isWordSeparator(c byte) bool {
-	return strings.IndexByte(wordPathBoundary, c) >= 0
+func isWordSeparator(r rune) bool {
+	return strings.IndexRune(wordPathBoundary, r) >= 0
 }
 
-func isUpperASCII(c byte) bool {
-	return 65 <= c && c <= 90
+func runeIndex(s []rune, r rune) int {
+	for i, s := range s {
+		if s == r {
+			return i
+		}
+	}
+	return -1
 }

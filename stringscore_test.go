@@ -8,22 +8,23 @@ import (
 )
 
 func TestScore(t *testing.T) {
-	target := "HeLlo-World"
+	target := "H❄Ll❄-World"
 
-	scores := make([]int, 0, 0)
-	scores = append(scores, stringscore.Score(target, "HelLo-World")) // direct case match
-	scores = append(scores, stringscore.Score(target, "hello-world")) // direct mix-case match
-	scores = append(scores, stringscore.Score(target, "HW"))          // direct case prefix (multiple)
-	scores = append(scores, stringscore.Score(target, "hw"))          // direct mix-case prefix (multiple)
-	scores = append(scores, stringscore.Score(target, "H"))           // direct case prefix
-	scores = append(scores, stringscore.Score(target, "h"))           // direct mix-case prefix
-	scores = append(scores, stringscore.Score(target, "W"))           // direct case word prefix
-	scores = append(scores, stringscore.Score(target, "w"))           // direct mix-case word prefix
-	scores = append(scores, stringscore.Score(target, "Ld"))          // in-string case match (multiple)
-	scores = append(scores, stringscore.Score(target, "ld"))          // in-string mix-case match
-	scores = append(scores, stringscore.Score(target, "L"))           // in-string case match
-	scores = append(scores, stringscore.Score(target, "l"))           // in-string mix-case match
-	scores = append(scores, stringscore.Score(target, "4"))           // no match
+	scores := []int{
+		stringscore.Score(target, "H❄lL❄-World"), // direct case match
+		stringscore.Score(target, "h❄ll❄-world"), // direct mix-case match
+		stringscore.Score(target, "HW"),          // direct case prefix (multiple)
+		stringscore.Score(target, "hw"),          // direct mix-case prefix (multiple)
+		stringscore.Score(target, "H"),           // direct case prefix
+		stringscore.Score(target, "h"),           // direct mix-case prefix
+		stringscore.Score(target, "W"),           // direct case word prefix
+		stringscore.Score(target, "w"),           // direct mix-case word prefix
+		stringscore.Score(target, "Ld"),          // in-string case match (multiple)
+		stringscore.Score(target, "ld"),          // in-string mix-case match
+		stringscore.Score(target, "L"),           // in-string case match
+		stringscore.Score(target, "l"),           // in-string mix-case match
+		stringscore.Score(target, "4"),           // no match
+	}
 
 	// Assert scoring order
 	sortedScores := make([]int, len(scores))
