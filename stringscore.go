@@ -24,6 +24,10 @@ func Score(target string, query string) int {
 		return 0 // return early if target or query are undefined
 	}
 
+	if len(query) > len(target) {
+		return 0 // impossible for query to be a substring
+	}
+
 	targetLower := strings.ToLower(target)
 	queryLower := strings.ToLower(query)
 
