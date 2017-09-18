@@ -42,7 +42,7 @@ func Score(target string, query string) int {
 		}
 
 		// Character match bonus
-		score += 1
+		score++
 
 		// Consecutive match bonus
 		if startAt == targetIdx {
@@ -51,7 +51,7 @@ func Score(target string, query string) int {
 
 		// Same case bonus
 		if target[targetIdx] == query[queryIdx] {
-			score += 1
+			score++
 		}
 
 		// Start of word bonus
@@ -71,7 +71,7 @@ func Score(target string, query string) int {
 				score += 7
 			} else if isUpperASCII(target[targetIdx]) {
 				// Inside word upper case bonus
-				score += 1
+				score++
 			}
 		}
 
