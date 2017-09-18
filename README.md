@@ -1,7 +1,8 @@
 
 # stringscore
 
-_Insert cool badges here_
+[![GoDoc](https://godoc.org/github.com/felixfbecker/stringscore?status.svg)](https://godoc.org/github.com/felixfbecker/stringscore)
+[![Build Status](https://travis-ci.org/felixfbecker/stringscore.svg?branch=master)](https://travis-ci.org/felixfbecker/stringscore)
 
 String scorer used by Visual Studio Code ported over to Go
 
