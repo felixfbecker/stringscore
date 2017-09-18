@@ -4,7 +4,6 @@ package stringscore
 
 import (
 	"strings"
-	"unicode"
 )
 
 var wordPathBoundary = [...]byte{'-', '_', ' ', '/', '\\', '.'}
@@ -70,7 +69,7 @@ func Score(target string, query string) int {
 			if afterSeparator {
 				// After separator bonus
 				score += 7
-			} else if unicode.IsUpper(rune(target[targetIdx])) {
+			} else if isUpperASCII(target[targetIdx]) {
 				// Inside word upper case bonus
 				score += 1
 			}
@@ -80,4 +79,8 @@ func Score(target string, query string) int {
 	}
 
 	return score
+}
+
+func isUpperASCII(c byte) bool {
+	return 65 <= c && c <= 90
 }
