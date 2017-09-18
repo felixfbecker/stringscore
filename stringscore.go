@@ -31,9 +31,9 @@ func Score(target string, query string) int {
 	score := 0
 
 	for queryIdx := range query {
-		indexOf := strings.IndexByte(targetLower[startAt:], queryLower[queryIdx]) + startAt
+		targetIdx := strings.IndexByte(targetLower[startAt:], queryLower[queryIdx]) + startAt
 
-		if indexOf == -1 {
+		if targetIdx == -1 {
 			score = 0 // This makes sure that the query is contained in the target
 			break
 		}
@@ -42,34 +42,34 @@ func Score(target string, query string) int {
 		score += 1
 
 		// Consecutive match bonus
-		if startAt == indexOf {
+		if startAt == targetIdx {
 			score += 5
 		}
 
 		// Same case bonus
-		if target[indexOf] == query[queryIdx] {
+		if target[targetIdx] == query[queryIdx] {
 			score += 1
 		}
 
 		// Start of word bonus
-		if indexOf == 0 {
+		if targetIdx == 0 {
 			score += 8
 		} else {
 			// After separator bonus
 			for _, w := range wordPathBoundary {
-				if w == target[indexOf-1] {
+				if w == target[targetIdx-1] {
 					score += 7
 					goto next
 				}
 			}
 		}
-		if unicode.IsUpper(rune(target[indexOf])) {
+		if unicode.IsUpper(rune(target[targetIdx])) {
 			// Inside word upper case bonus
 			score += 1
 		}
 
 	next:
-		startAt = indexOf + 1
+		startAt = targetIdx + 1
 	}
 
 	return score
