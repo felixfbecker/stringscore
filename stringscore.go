@@ -4,10 +4,7 @@ package stringscore
 
 import (
 	"strings"
-	"unicode"
 )
-
-var wordPathBoundary = [...]byte{'-', '_', ' ', '/', '\\', '.'}
 
 // Score computes a score for the given string and the given query.
 //
@@ -24,57 +21,60 @@ func Score(target string, query string) int {
 		return 0 // return early if target or query are undefined
 	}
 
-	queryLen := len(query)
+	if len(query) > len(target) {
+		return 0 // impossible for query to be a substring
+	}
+
 	targetLower := strings.ToLower(target)
 	queryLower := strings.ToLower(query)
 
-	index := 0
 	startAt := 0
 	score := 0
 
-	for index < queryLen {
+	for queryIdx := 0; queryIdx < len(query); queryIdx++ {
+		targetIdx := strings.IndexByte(targetLower[startAt:], queryLower[queryIdx]) + startAt
 
-		indexOf := strings.IndexByte(targetLower[startAt:], queryLower[index]) + startAt
-
-		if indexOf == -1 {
+		if targetIdx < startAt {
 			score = 0 // This makes sure that the query is contained in the target
 			break
 		}
 
 		// Character match bonus
-		score += 1
+		score++
 
 		// Consecutive match bonus
-		if startAt == indexOf {
+		if startAt == targetIdx {
 			score += 5
 		}
 
 		// Same case bonus
-		if indexOf < queryLen && target[indexOf] == query[indexOf] {
-			score += 1
+		if target[targetIdx] == query[queryIdx] {
+			score++
 		}
 
 		// Start of word bonus
-		if indexOf == 0 {
+		if targetIdx == 0 {
 			score += 8
-		} else {
+		} else if isWordSeparator(target[targetIdx-1]) {
 			// After separator bonus
-			for _, w := range wordPathBoundary {
-				if w == target[indexOf-1] {
-					score += 7
-					goto next
-				}
-			}
-		}
-		if unicode.IsUpper(rune(target[indexOf])) {
+			score += 7
+		} else if isUpperASCII(target[targetIdx]) {
 			// Inside word upper case bonus
-			score += 1
+			score++
 		}
 
-	next:
-		startAt = indexOf + 1
-		index++
+		startAt = targetIdx + 1
 	}
 
 	return score
+}
+
+const wordPathBoundary = "-_ /\\."
+
+func isWordSeparator(c byte) bool {
+	return strings.IndexByte(wordPathBoundary, c) >= 0
+}
+
+func isUpperASCII(c byte) bool {
+	return 65 <= c && c <= 90
 }
