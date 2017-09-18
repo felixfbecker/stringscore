@@ -30,8 +30,8 @@ func Score(target string, query string) int {
 	startAt := 0
 	score := 0
 
-	for index := range query {
-		indexOf := strings.IndexByte(targetLower[startAt:], queryLower[index]) + startAt
+	for queryIdx := range query {
+		indexOf := strings.IndexByte(targetLower[startAt:], queryLower[queryIdx]) + startAt
 
 		if indexOf == -1 {
 			score = 0 // This makes sure that the query is contained in the target
@@ -47,7 +47,7 @@ func Score(target string, query string) int {
 		}
 
 		// Same case bonus
-		if target[indexOf] == query[index] {
+		if target[indexOf] == query[queryIdx] {
 			score += 1
 		}
 
