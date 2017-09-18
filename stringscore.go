@@ -6,8 +6,6 @@ import (
 	"strings"
 )
 
-var wordPathBoundary = [...]byte{'-', '_', ' ', '/', '\\', '.'}
-
 // Score computes a score for the given string and the given query.
 //
 // Rules:
@@ -57,28 +55,24 @@ func Score(target string, query string) int {
 		// Start of word bonus
 		if targetIdx == 0 {
 			score += 8
-		} else {
-			afterSeparator := false
-			for _, w := range wordPathBoundary {
-				if w == target[targetIdx-1] {
-					afterSeparator = true
-					break
-				}
-			}
-
-			if afterSeparator {
-				// After separator bonus
-				score += 7
-			} else if isUpperASCII(target[targetIdx]) {
-				// Inside word upper case bonus
-				score++
-			}
+		} else if isWordSeparator(target[targetIdx-1]) {
+			// After separator bonus
+			score += 7
+		} else if isUpperASCII(target[targetIdx]) {
+			// Inside word upper case bonus
+			score++
 		}
 
 		startAt = targetIdx + 1
 	}
 
 	return score
+}
+
+const wordPathBoundary = "-_ /\\."
+
+func isWordSeparator(c byte) bool {
+	return strings.IndexByte(wordPathBoundary, c) >= 0
 }
 
 func isUpperASCII(c byte) bool {
