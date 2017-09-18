@@ -30,7 +30,7 @@ func Score(target string, query string) int {
 	startAt := 0
 	score := 0
 
-	for queryIdx := range query {
+	for queryIdx := 0; queryIdx < len(query); queryIdx++ {
 		targetIdx := strings.IndexByte(targetLower[startAt:], queryLower[queryIdx]) + startAt
 
 		if targetIdx == -1 {
