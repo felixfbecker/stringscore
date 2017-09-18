@@ -4,6 +4,7 @@ package stringscore
 
 import (
 	"strings"
+	"unicode"
 )
 
 // Score computes a score for the given string and the given query.
@@ -16,7 +17,6 @@ import (
 // Start of word/path bonus: 7
 // Start of string bonus: 8
 func Score(target string, query string) int {
-
 	if target == "" || query == "" {
 		return 0 // return early if target or query are undefined
 	}
@@ -58,7 +58,7 @@ func Score(target string, query string) int {
 		} else if isWordSeparator(target[targetIdx-1]) {
 			// After separator bonus
 			score += 7
-		} else if isUpperASCII(target[targetIdx]) {
+		} else if unicode.IsUpper(rune(target[targetIdx])) {
 			// Inside word upper case bonus
 			score++
 		}
@@ -73,8 +73,4 @@ const wordPathBoundary = "-_ /\\."
 
 func isWordSeparator(c byte) bool {
 	return strings.IndexByte(wordPathBoundary, c) >= 0
-}
-
-func isUpperASCII(c byte) bool {
-	return 65 <= c && c <= 90
 }
