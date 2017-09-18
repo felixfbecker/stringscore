@@ -32,12 +32,12 @@ func Score(target string, query string) int {
 	score := 0
 
 	for queryIdx := 0; queryIdx < len(query); queryIdx++ {
-		targetIdx := strings.IndexByte(targetLower[startAt:], queryLower[queryIdx]) + startAt
-
-		if targetIdx < startAt {
+		targetIdx := strings.IndexByte(targetLower[startAt:], queryLower[queryIdx])
+		if targetIdx == -1 {
 			score = 0 // This makes sure that the query is contained in the target
 			break
 		}
+		targetIdx += startAt
 
 		// Character match bonus
 		score++
