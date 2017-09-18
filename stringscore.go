@@ -28,12 +28,10 @@ func Score(target string, query string) int {
 	targetLower := strings.ToLower(target)
 	queryLower := strings.ToLower(query)
 
-	index := 0
 	startAt := 0
 	score := 0
 
-	for index < queryLen {
-
+	for index := range query {
 		indexOf := strings.IndexByte(targetLower[startAt:], queryLower[index]) + startAt
 
 		if indexOf == -1 {
@@ -73,7 +71,6 @@ func Score(target string, query string) int {
 
 	next:
 		startAt = indexOf + 1
-		index++
 	}
 
 	return score
