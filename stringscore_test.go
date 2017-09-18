@@ -39,3 +39,24 @@ func TestScore(t *testing.T) {
 		}
 	}
 }
+
+func TestZeroScoreOnEmptyTarget(t *testing.T) {
+	score := stringscore.Score("", "foo")
+	if score != 0 {
+		t.Errorf("Expected empty target to result in score of zero, got: %v", score)
+	}
+}
+
+func TestZeroScoreOnEmptyQuery(t *testing.T) {
+	score := stringscore.Score("foo", "")
+	if score != 0 {
+		t.Errorf("Expected empty query to result in score of zero, got: %v", score)
+	}
+}
+
+func TestZeroScoreOnQueryLongerThanTarget(t *testing.T) {
+	score := stringscore.Score("foo", "foobar")
+	if score != 0 {
+		t.Errorf("Expected query longer than target to result in score of zero, got: %v", score)
+	}
+}
