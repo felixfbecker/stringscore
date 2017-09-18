@@ -55,20 +55,23 @@ func Score(target string, query string) int {
 		if targetIdx == 0 {
 			score += 8
 		} else {
-			// After separator bonus
+			afterSeparator := false
 			for _, w := range wordPathBoundary {
 				if w == target[targetIdx-1] {
-					score += 7
-					goto next
+					afterSeparator = true
+					break
 				}
 			}
-		}
-		if unicode.IsUpper(rune(target[targetIdx])) {
-			// Inside word upper case bonus
-			score += 1
+
+			if afterSeparator {
+				// After separator bonus
+				score += 7
+			} else if unicode.IsUpper(rune(target[targetIdx])) {
+				// Inside word upper case bonus
+				score += 1
+			}
 		}
 
-	next:
 		startAt = targetIdx + 1
 	}
 
