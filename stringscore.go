@@ -24,7 +24,6 @@ func Score(target string, query string) int {
 		return 0 // return early if target or query are undefined
 	}
 
-	queryLen := len(query)
 	targetLower := strings.ToLower(target)
 	queryLower := strings.ToLower(query)
 
@@ -48,7 +47,7 @@ func Score(target string, query string) int {
 		}
 
 		// Same case bonus
-		if indexOf < queryLen && target[indexOf] == query[indexOf] {
+		if target[indexOf] == query[index] {
 			score += 1
 		}
 
