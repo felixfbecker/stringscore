@@ -41,6 +41,15 @@ func TestScore(t *testing.T) {
 	}
 }
 
+func TestExactMatchIsPrefferedOverFuzzyMatch(t *testing.T) {
+	query := "backend"
+	fuzzyScore := stringscore.Score("vendor/github.com/coreos/go-oidc/key/manager.go", query)
+	exactScore := stringscore.Score("pkg/backend/trace.go", query)
+	if fuzzyScore >= exactScore {
+		t.Errorf("Expected a fuzzy match to have a lower score than an exact match, fuzzy: %v, exact: %v", fuzzyScore, exactScore)
+	}
+}
+
 func TestZeroScoreOnEmptyTarget(t *testing.T) {
 	score := stringscore.Score("", "foo")
 	if score != 0 {
