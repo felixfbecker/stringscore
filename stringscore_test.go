@@ -70,3 +70,14 @@ func TestZeroScoreOnQueryLongerThanTarget(t *testing.T) {
 		t.Errorf("Expected query longer than target to result in score of zero, got: %v", score)
 	}
 }
+
+func BenchmarkScoreASCII(b *testing.B) {
+	query := "backend"
+	target := "vendor/github.com/gorilla/websocket/conn_read_legacy.go"
+	for n := 0; n <= b.N; n++ {
+		score := stringscore.Score(target, query)
+		if score <= 0 {
+			b.Fatal("Expected a match")
+		}
+	}
+}
