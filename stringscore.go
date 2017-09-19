@@ -30,11 +30,13 @@ func Score(target string, query string) int {
 	targetLower := []rune(strings.ToLower(target))
 	queryLower := []rune(strings.ToLower(query))
 
+	startAt := 0
 	score := 0
 
 	for queryIdx := 0; queryIdx < len(queryRunes); queryIdx++ {
-		targetIdx := runeIndex(targetLower, queryLower[queryIdx])
-		if targetIdx == -1 {
+		targetIdx := runeIndex(targetLower[startAt:], queryLower[queryIdx]) + startAt
+
+		if targetIdx < startAt {
 			score = 0 // This makes sure that the query is contained in the target
 			break
 		}
@@ -43,7 +45,7 @@ func Score(target string, query string) int {
 		score++
 
 		// Consecutive match bonus
-		if targetIdx == 0 {
+		if targetIdx == startAt {
 			score += 5
 		}
 
@@ -63,9 +65,7 @@ func Score(target string, query string) int {
 			score++
 		}
 
-		// Remove one rune from the start of target strings.
-		targetLower = targetLower[targetIdx+1:]
-		targetRunes = targetRunes[targetIdx+1:]
+		startAt = targetIdx + 1
 	}
 	return score
 }
