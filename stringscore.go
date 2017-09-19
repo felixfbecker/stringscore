@@ -26,15 +26,13 @@ func Score(target string, query string) int {
 	}
 
 	targetRunes := []rune(target)
-	queryRunes := []rune(query)
 	targetLower := []rune(strings.ToLower(target))
-	queryLower := []rune(strings.ToLower(query))
 
 	startAt := 0
 	score := 0
 
-	for queryIdx := 0; queryIdx < len(queryRunes); queryIdx++ {
-		targetIdx := runeIndex(targetLower[startAt:], queryLower[queryIdx]) + startAt
+	for _, queryC := range query {
+		targetIdx := runeIndex(targetLower[startAt:], unicode.ToLower(queryC)) + startAt
 
 		if targetIdx < startAt {
 			score = 0 // This makes sure that the query is contained in the target
@@ -50,7 +48,7 @@ func Score(target string, query string) int {
 		}
 
 		// Same case bonus
-		if targetRunes[targetIdx] == queryRunes[queryIdx] {
+		if targetRunes[targetIdx] == queryC {
 			score++
 		}
 
