@@ -26,13 +26,12 @@ func Score(target string, query string) int {
 	}
 
 	targetRunes := []rune(target)
-	targetLower := []rune(strings.ToLower(target))
 
 	startAt := 0
 	score := 0
 
 	for _, queryC := range query {
-		targetIdx := runeIndex(targetLower[startAt:], unicode.ToLower(queryC)) + startAt
+		targetIdx := runeIndexLower(targetRunes[startAt:], unicode.ToLower(queryC)) + startAt
 
 		if targetIdx < startAt {
 			score = 0 // This makes sure that the query is contained in the target
@@ -74,9 +73,9 @@ func isWordSeparator(r rune) bool {
 	return strings.IndexRune(wordPathBoundary, r) >= 0
 }
 
-func runeIndex(s []rune, r rune) int {
+func runeIndexLower(s []rune, r rune) int {
 	for i, s := range s {
-		if s == r {
+		if unicode.ToLower(s) == r {
 			return i
 		}
 	}
