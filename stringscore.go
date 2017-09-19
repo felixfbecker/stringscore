@@ -64,8 +64,8 @@ func Score(target string, query string) int {
 		}
 
 		// Remove one rune from the start of target strings.
-		targetLower = targetLower[1:]
-		targetRunes = targetRunes[1:]
+		targetLower = targetLower[targetIdx+1:]
+		targetRunes = targetRunes[targetIdx+1:]
 	}
 	return score
 }
