@@ -25,44 +25,55 @@ func Score(target string, query string) int {
 		return 0 // impossible for query to be a substring
 	}
 
-	targetRunes := []rune(target)
-
-	startAt := 0
-	score := 0
+	var (
+		err         error
+		targetC     rune
+		targetCPrev rune
+		reader      = strings.NewReader(target)
+		score       = 0
+		firstMatch  = true
+	)
 
 	for _, queryC := range query {
-		targetIdx := runeIndexLower(targetRunes[startAt:], unicode.ToLower(queryC)) + startAt
-
-		if targetIdx < startAt {
-			score = 0 // This makes sure that the query is contained in the target
-			break
+		queryCLower := unicode.ToLower(queryC)
+		consecutive := true
+		for {
+			targetCPrev = targetC
+			targetC, _, err = reader.ReadRune()
+			if err != nil {
+				// EOF, so query is not contained in target
+				return 0
+			}
+			if unicode.ToLower(targetC) == queryCLower {
+				break
+			}
+			consecutive = false
 		}
 
 		// Character match bonus
 		score++
 
 		// Consecutive match bonus
-		if targetIdx == startAt {
+		if consecutive {
 			score += 5
 		}
 
 		// Same case bonus
-		if targetRunes[targetIdx] == queryC {
+		if targetC == queryC {
 			score++
 		}
 
 		// Start of word bonus
-		if targetIdx == 0 {
+		if firstMatch && consecutive {
 			score += 8
-		} else if isWordSeparator(targetRunes[targetIdx-1]) {
+		} else if isWordSeparator(targetCPrev) {
 			// After separator bonus
 			score += 7
-		} else if unicode.IsUpper(targetRunes[targetIdx]) {
+		} else if unicode.IsUpper(targetC) {
 			// Inside word upper case bonus
 			score++
 		}
-
-		startAt = targetIdx + 1
+		firstMatch = false
 	}
 	return score
 }
@@ -71,13 +82,4 @@ const wordPathBoundary = "-_ /\\."
 
 func isWordSeparator(r rune) bool {
 	return strings.IndexRune(wordPathBoundary, r) >= 0
-}
-
-func runeIndexLower(s []rune, r rune) int {
-	for i, s := range s {
-		if unicode.ToLower(s) == r {
-			return i
-		}
-	}
-	return -1
 }
