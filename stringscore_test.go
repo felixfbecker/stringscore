@@ -43,7 +43,7 @@ func TestScore(t *testing.T) {
 
 func TestExactMatchIsPrefferedOverFuzzyMatch(t *testing.T) {
 	query := "backend"
-	fuzzyScore := stringscore.Score("vendor/github.com/coreos/go-oidc/key/manager.go", query)
+	fuzzyScore := stringscore.Score("vendor/github.com/gorilla/websocket/conn_read_legacy.go", query)
 	exactScore := stringscore.Score("pkg/backend/trace.go", query)
 	if fuzzyScore >= exactScore {
 		t.Errorf("Expected a fuzzy match to have a lower score than an exact match, fuzzy: %v, exact: %v", fuzzyScore, exactScore)
@@ -68,5 +68,16 @@ func TestZeroScoreOnQueryLongerThanTarget(t *testing.T) {
 	score := stringscore.Score("foo", "foobar")
 	if score != 0 {
 		t.Errorf("Expected query longer than target to result in score of zero, got: %v", score)
+	}
+}
+
+func BenchmarkScoreASCII(b *testing.B) {
+	query := "backend"
+	target := "vendor/github.com/gorilla/websocket/conn_read_legacy.go"
+	for n := 0; n <= b.N; n++ {
+		score := stringscore.Score(target, query)
+		if score <= 0 {
+			b.Fatal("Expected a match")
+		}
 	}
 }
