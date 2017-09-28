@@ -50,6 +50,15 @@ func TestExactMatchIsPrefferedOverFuzzyMatch(t *testing.T) {
 	}
 }
 
+func TestExactMatchIsPrefferedOverSubstring(t *testing.T) {
+	query := "react-router"
+	substringScore := stringscore.Score("react-router-cdn", query)
+	exactScore := stringscore.Score("react-router", query)
+	if substringScore >= exactScore {
+		t.Errorf("Expected a substring match to have a lower score than an exact match, substring: %v, exact: %v", substringScore, exactScore)
+	}
+}
+
 func TestZeroScoreOnEmptyTarget(t *testing.T) {
 	score := stringscore.Score("", "foo")
 	if score != 0 {
